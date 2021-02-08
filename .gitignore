@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/autocomplete-photos/node_modules
 /.pnp
 .pnp.js
 
