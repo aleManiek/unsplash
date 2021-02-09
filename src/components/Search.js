@@ -58,7 +58,7 @@ const Wrapper = styled.div`
   border-radius: ${(props) => props.borderRadius || "5px"};
   position: relative;
   margin: ${(props) => props.margin || "1em 0"};
-  padding: ${(props) => props.padding || "0.2em"};
+  padding: ${(props) => props.padding || "0.2em 0"};
 `;
 
 const Icon = styled(SearchIcon)`
@@ -72,6 +72,7 @@ const Input = styled.input`
   margin-right: 20px;
   border: none;
   outline: none;
+  font-size: 0.8em;
   background-color: ${(props) => props.backgroundColor || "white"};
 `;
 

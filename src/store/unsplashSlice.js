@@ -7,6 +7,7 @@ export const unsplashSlice = createSlice({
     autocomplete: [],
     photos: [],
     current_photo: "",
+    random_photo: "",
   },
   reducers: {
     SET_SEARCH: (state, action) => {
@@ -25,15 +26,18 @@ export const unsplashSlice = createSlice({
     SET_CURRENT_PHOTO: (state, action) => {
       state.current_photo = action.payload;
     },
+    SET_RANDOM_PHOTO: (state, action) => {
+      state.random_photo = action.payload;
+    },
   },
 });
 
 export default unsplashSlice.reducer;
 
-export const { SET_SEARCH, CLEAR_AUTOCOMPLETE, SET_AUTOCOMPLETE, SET_PHOTOS, SET_CURRENT_PHOTO } = unsplashSlice.actions;
+export const { SET_SEARCH, CLEAR_AUTOCOMPLETE, SET_AUTOCOMPLETE, SET_PHOTOS, SET_CURRENT_PHOTO, SET_RANDOM_PHOTO } = unsplashSlice.actions;
 
 export const autocomplete = (query) => async (dispatch) => {
-  const url = `http://localhost:5000/autocomplete/${query}`;
+  const url = `/autocomplete/${query}`;
   try {
     const res = await fetch(url);
     const data = await res.json();
@@ -45,8 +49,7 @@ export const autocomplete = (query) => async (dispatch) => {
   }
 };
 
-export const getPhotos = (query) => async (dispatch) => {
-  const url = `https://api.unsplash.com/search/photos/?query=${query}&per_page=20`;
+const fetchData = async (url) => {
   try {
     const res = await fetch(url, {
       headers: {
@@ -55,8 +58,7 @@ export const getPhotos = (query) => async (dispatch) => {
     });
     if (res.status === 200) {
       const data = await res.json();
-      dispatch(SET_PHOTOS(data.results));
-      return true;
+      return data;
     }
     return false;
   } catch (e) {
@@ -64,21 +66,32 @@ export const getPhotos = (query) => async (dispatch) => {
   }
 };
 
+export const getPhotos = (query) => async (dispatch) => {
+  const url = `https://api.unsplash.com/search/photos/?query=${query}&per_page=20`;
+  const data = await fetchData(url);
+  if (data) {
+    dispatch(SET_PHOTOS(data.results));
+    return true;
+  }
+  return false;
+};
+
 export const getPhoto = (id) => async (dispatch) => {
   const url = `https://api.unsplash.com/photos/${id}`;
-  try {
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_KEY}`,
-      },
-    });
-    if (res.status === 200) {
-      const data = await res.json();
-      dispatch(SET_CURRENT_PHOTO(data));
-      return true;
-    }
-    return false;
-  } catch (err) {
-    console.log(err);
+  const data = await fetchData(url);
+  if (data) {
+    dispatch(SET_CURRENT_PHOTO(data));
+    return true;
   }
+  return false;
+};
+
+export const getRandomPhoto = () => async (dispatch) => {
+  const url = `https://api.unsplash.com/photos/random`;
+  const data = await fetchData(url);
+  if (data) {
+    dispatch(SET_RANDOM_PHOTO(data.urls.full));
+    return true;
+  }
+  return false;
 };

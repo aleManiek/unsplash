@@ -3,12 +3,11 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const PORT = process.env.PORT || 80;
 
-// const url = `https://unsplash.com/nautocomplete/auto`;
-// fetch(url).then((res) => res.json().then((data) => console.log(data)));
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, "..", "build")));
+app.use(express.static(path.join(__dirname, "client/build")));
 app.use(express.static("public"));
 
 app.get("/autocomplete/:query", async (req, res) => {
@@ -24,10 +23,10 @@ app.get("/autocomplete/:query", async (req, res) => {
   }
 });
 
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
-app.listen(5000, () => {
-  console.log("server started on port 5000");
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });

@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Search from "../components/Search";
+import { getRandomPhoto } from "../store/unsplashSlice";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getRandomPhoto());
+  }, [dispatch]);
+
+  const src = useSelector((state) => state.photo.random_photo);
   return (
-    <Container>
+    <Container src={src}>
       <Wrapper>
         <Hero>Unsplash</Hero>
         <H1>The internet’s source of freely-usable images. </H1>
@@ -21,8 +29,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-image: url(https:images.unsplash.com/photo-1611506420749-9cbb8e5a1057?crop=entropy&cs=srgb&fm=jpg&ixid=MXwyMDQyNjd8MHwxfHJhbmRvbXx8fHx8fHx8&ixlib=rb-1.2.1&q=85);
-  background-position: center;
+  background-image: url(${(props) => props.src});
+  background-repeat: no-repeat;
+  background-size: cover;
   color: white;
 `;
 
