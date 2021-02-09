@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import Search from "../components/Search";
 import Modal from "../components/Modal";
-import { getPhoto, getPhotos, CLEAR_AUTOCOMPLETE } from "../store/unsplashSlice";
+import { getPhoto, getPhotos, CLEAR_AUTOCOMPLETE, SET_CURRENT_PHOTO } from "../store/unsplashSlice";
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -19,6 +19,10 @@ export default function SearchPage() {
     if (photos.length === 0) {
       dispatch(getPhotos(query));
     }
+
+    return function closeModal() {
+      dispatch(SET_CURRENT_PHOTO(""));
+    };
   }, [dispatch, photos.length, query]);
 
   return (
